@@ -1,6 +1,12 @@
 from datetime import datetime
-import __builtin__
-original_object = __builtin__.object
+try:
+    import __builtin__
+    builtin_module = __builtin__
+except ImportError:
+    import builtins
+    builtin_module = builtins
+
+original_object = builtin_module.object
 
 
 class Calls(dict):
@@ -12,7 +18,6 @@ class Calls(dict):
         return sorted(all_events, key=lambda x: x[1])
 
 GLOBAL_CALLS = Calls()
-
 
 
 class MetaVerbose(type):
@@ -35,8 +40,7 @@ class NewBase(original_object):
 
 
 def activate():
-    import __builtin__
-    __builtin__.object = NewBase
+    builtin_module.object = NewBase
 
 
 def init_calls():
